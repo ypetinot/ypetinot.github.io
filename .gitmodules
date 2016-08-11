@@ -4,3 +4,6 @@
 [submodule "three-dxf"]
 	path = three-dxf
 	url = https://github.com/gdsestimating/three-dxf.git
+[submodule "dxf-parser"]
+	path = dxf-parser
+	url = https://github.com/gdsestimating/dxf-parser.git

@@ -1,3 +1,6 @@
 [submodule "OpenJSCAD.org"]
 	path = OpenJSCAD.org
 	url = https://github.com/Spiritdude/OpenJSCAD.org.git
+[submodule "three-dxf"]
+	path = three-dxf
+	url = https://github.com/gdsestimating/three-dxf.git

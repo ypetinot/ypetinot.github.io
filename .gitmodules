@@ -5,5 +5,5 @@
 	path = three-dxf
 	url = https://github.com/gdsestimating/three-dxf.git
 [submodule "dxf-parser"]
-	path = dxf-parser
+	path = bower_components/dxf-parser
 	url = https://github.com/gdsestimating/dxf-parser.git

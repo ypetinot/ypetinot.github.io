@@ -1,0 +1,47 @@
+﻿<!-- Choix tiroir -->
+<div class="multiChoiceBox" ng-show="uxZone.isEnabled">
+    <ul class="horizontalList">
+        <a href="#" ng-repeat="drw in drawers" ng-class="{selectedItemToggle: uxZone.uxDrawer.selectedDrawerModel === drw}" ng-click="uxZone.uxDrawer.setDrawerModel(drw)">
+            <li><img ng-src="{{drw.ImageUrl}}" /><p>{{drw.Title}}</p></li>
+        </a>
+    </ul>
+</div>
+
+<!-- Choix types facades -->
+<div ng-if="drawerFacades.length > 1">
+    <div style="display: inline-block; width: 310px;">
+        <label><span class="w700">Façades</span></label>    
+    </div>
+    <div style="display: inline-block;">
+        <!-- Standard Select -->
+        <div class="mdl-selectfield">
+            <select ng-options="facade.Title for facade in drawerFacades" ng-model="uxZone.uxDrawer.selectedFacadeModel"></select>
+        </div>  
+    </div>
+</div>
+
+<!-- Choix finitions facades -->
+<label ng-show="uxZone.isEnabled"><span class="w700">Finitions des façades</span></label>
+<div class="multiChoiceBox" ng-show="uxZone.isEnabled">
+    <div class="finitionCardContainer">
+
+        <!-- Finition card -->
+        <a href="#" class="finitionCard" ng-class="{finitionCardSelected: uxZone.uxDrawer.selectedFacadeColour === clr}" ng-repeat="clr in colours" ng-click="uxZone.uxDrawer.setFacadeColour(clr)">
+            <div class="finition" ng-style="{ background: clr.HasColor ? ('#'+ clr.Color) : ('url(' + clr.ImageUrl + ')') }">
+                <img src="/img/material_top_layer.png" />
+            </div>
+            <p>{{clr.Title}}</p>
+        </a>
+
+    </div>
+</div>                    
+
+<!-- Choix type de poignées -->
+<label ng-show="uxZone.isEnabled"><span class="w700">Type de poignées</span></label>
+<div class="multiChoiceBox" ng-show="uxZone.isEnabled">
+    <ul class="horizontalList">
+        <a href="#" ng-repeat="acc in accessories" ng-class="{selectedItem: uxZone.uxDrawer.selectedAccessoryModel === acc}" ng-click="uxZone.uxDrawer.setHandleModel(acc)">
+            <li><img ng-src="{{acc.ImageUrl}}" /><p>{{acc.Title}}</p></li>
+        </a>
+    </ul>    
+</div>

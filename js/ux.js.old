@@ -1,0 +1,1165 @@
+"use strict";
+(function() {
+    function i(t, i, r) {
+	return {
+	    restrict: "A",
+	    link: function(t, u, f) {
+		var s = navigator.userAgent
+		, o = /(edge)\/((\d+)?[\w\.]+)/i.test(s);
+		o && n(u).removeClass("mdl-slider mdl-js-slider");
+		var c = u[0].MaterialSlider
+		, e = f.ezSliderVal
+		, h = function() {
+		    return t.$eval(e)
+		}
+		;
+		t.$watch(e, function() {
+		    i(function() {
+			var t = h();
+			t && u.length > 0 && u[0].MaterialSlider ? u[0].MaterialSlider.change(t) : o && t && u.length > 0 && n(u).val(t)
+		    })
+		});
+		o || n(u).change(function(i) {
+		    t.$apply(function() {
+			r(e).assign(t, parseFloat(n(i.target).val()));
+			f.ezSliderChange && t.$eval(f.ezSliderChange)
+		    })
+		});
+		n(u).on("input", function(i) {
+		    t.$apply(function() {
+			r(e).assign(t, parseFloat(n(i.target).val()));
+			f.ezSliderChange && t.$eval(f.ezSliderChange)
+		    })
+		});
+		u.on("$destroy", function() {
+		    n(u).unbind("change");
+		    n(u).unbind("input")
+		})
+	    }
+	}
+    }
+    function r(t, i, r, u, f, e, o, s, h, c, l, a, v, y, p, w) {
+	var tt = function(n) {
+	    var t = this;
+	    this.uxmgr = n;
+	    this.scope = n.scope;
+	    this.compound = n.getCompound();
+	    t.isEnabled = !1;
+	    t.minWidth = n.getClosetWidthRule().mini;
+	    t.minHeight = n.getClosetHeightRule().mini;
+	    t.minDepth = n.getClosetDepthRule().mini;
+	    t.maxWidth = n.getClosetWidthRule().maxi;
+	    t.maxHeight = n.getClosetHeightRule().maxi;
+	    t.maxDepth = n.getClosetDepthRule().maxi;
+	    t.closetWidth = 0;
+	    t.closetHeight = 0;
+	    t.closetDepth = 0;
+	    t.closetWidth = t.compound.width;
+	    t.closetHeight = t.compound.height;
+	    t.closetDepth = t.compound.depth;
+	    t.scope.$watch(function() {
+		return t.compound && !n.hasSelectedZone()
+	    }, function(n) {
+		t.isEnabled = n
+	    })
+	}
+	, nt, it, k, g, b, d, ut, ft, rt;
+	return tt.prototype.notifyChange = function() {
+	    var n = this
+	    , i = this.uxmgr
+	    , r = i.createClosetValidatorDimArgs()
+	    , t = w.getClosetDimensionBounds(r);
+	    n.minWidth = t.minWidth;
+	    n.minHeight = t.minHeight;
+	    n.minDepth = t.minDepth;
+	    n.maxWidth = t.maxWidth;
+	    n.maxHeight = t.maxHeight;
+	    n.maxDepth = t.maxDepth
+	}
+	,
+	tt.prototype.update = function() {
+	    var n = this
+	    , t = n.compound
+	    , r = n.uxmgr.getProject().getGround()
+	    , i = n.uxmgr.scope;
+	    if (i.myClosetForm.closetWidth.$invalid || i.myClosetForm.closetHeight.$invalid || i.myClosetForm.closetDepth.$invalid) {
+		n.updPromise = undefined;
+		n.invalidated = !1;
+		return
+	    }
+	    t.width = n.closetWidth;
+	    t.height = n.closetHeight;
+	    t.depth = n.closetDepth;
+	    t.update();
+	    r.setClosetHeight(n.closetHeight);
+	    r.update();
+	    n.scope.uxZone.notifyChange();
+	    n.uxmgr.mustBeSaved();
+	    n.uxmgr.updateBOMAndPrice();
+	    n.uxmgr.errorMsg = "";
+	    n.updPromise = undefined
+	}
+	,
+	tt.prototype.changeColour = function(n) {
+	    var t = this;
+	    t.scope.selectedColour !== n && (t.scope.selectedColour = n,
+					     t.scope.selectedColour.load().then(function() {
+						 c.setDefaultColour(t.compound, t.scope.selectedColour) && (t.uxmgr.mustBeSaved(),
+													    t.uxmgr.updateBOMAndPrice())
+					     }),
+					     t.uxmgr.errorMsg = "")
+	}
+	,
+	tt.prototype.changePanel = function() {
+	    var i = this.uxmgr, n = this, r = this.compound.defaultPanelModel, u = i.createClosetValidatorDimArgs(), t;
+	    if (u.forcedThickness = n.scope.selectedMaterial.Thickness,
+		t = w.getClosetDimensionBounds(u),
+		!p.isValid(n.compound.getWidth(), t.minWidth, t.maxWidth)) {
+		i.errorMsg = "La largeur des zones n'est plus valide. La matière ne peut pas être changée.";
+		n.scope.selectedMaterial = r;
+		return
+	    }
+	    if (!p.isValid(n.compound.getHeight(), t.minHeight, t.maxHeight)) {
+		i.errorMsg = "La hauteur des zones n'est plus valide. La matière ne peut pas être changée.";
+		n.scope.selectedMaterial = r;
+		return
+	    }
+	    c.setDefaultPanelModel(n.compound, n.scope.selectedMaterial) && (n.notifyChange(),
+									     n.uxmgr.mustBeSaved(),
+									     n.uxmgr.updateBOMAndPrice());
+	    i.errorMsg = ""
+	}
+	,
+	nt = function(n, t) {
+	    this.uxmgr = n;
+	    this.uxzone = t;
+	    this.isEnabled = !1;
+	    this.currentDrawer;
+	    this.selectedDrawerModel;
+	    this.selectedFacadeModel = s.getFacadeModelTable()[0];
+	    this.selectedFacadeColour = s.getFacadeModelTable()[0];
+	    this.selectedAccessoryModel = s.getAccessoryModelTable()[0]
+	}
+	,
+	nt.prototype.notifyChange = function(n) {
+	    this.currentDrawer = n;
+	    this.isEnabled = n ? !0 : !1;
+	    this.selectedDrawerModel = n ? n.getDrawerModel() : undefined;
+	    this.selectedFacadeModel = n ? n.getFacadeModel() : s.getFacadeModelTable()[0];
+	    this.selectedFacadeColour = n && n.getFacadeColour() ? n.getFacadeColour() : s.getColourTableWithNone()[0];
+	    this.selectedAccessoryModel = n ? n.getHandleModel() : s.getAccessoryModelTable()[0]
+	}
+	,
+	nt.prototype.checkAddDrawer = function(n) {
+	    var i = this.uxmgr
+	    , r = this.uxzone.zones.selected
+	    , t = n.drawerModel
+	    , e = i.getCompound().getDefaultThickness()
+	    , u = i.getZoneWidthRule()
+	    , f = i.getZoneHeightRule()
+	    , o = i.getDGWidthBehavior()
+	    , s = i.getDGHeightBehavior();
+	    n.vSeparatorRequired = !1;
+	    n.hSeparatorRequired = !1;
+	    var h = t.MinWidth > u.mini ? t.MinWidth : u.mini
+	    , c = t.MinHeight > f.mini ? t.MinHeight : f.mini
+	    , l = t.MinDepth;
+	    return r.getWidth() < h ? (i.errorMsg = "La zone est trop petite en largeur. Ajout impossible.",
+				       !1) : r.getDepth() < l ? (i.errorMsg = "La zone est trop petite en profondeur. Ajout impossible.",
+								 !1) : o === "ValidMiniMaxi" && p.isTooLarge(r.getWidth(), t.MaxWidth) ? (i.errorMsg = "La zone est trop grande en largeur. Ajout impossible.",
+																	  !1) : r.getHeight() < c ? (i.errorMsg = "La zone est trop petite en hauteur. Ajout impossible.",
+																				     !1) : s === "ValidMiniMaxi" && p.isTooLarge(r.getHeight(), t.MaxHeight) ? (i.errorMsg = "La zone est trop grande en hauteur. Ajout impossible.",
+																														!1) : (p.isTooLarge(r.getWidth(), t.MaxWidth) && o === "ValidMiniWithAutoSeparator" && (n.zoneWidth = t.MaxWidth < u.mini ? u.mini : t.MaxWidth,
+																																									r.getWidth() - n.zoneWidth - e > u.mini && (n.vSeparatorRequired = !0)),
+																														       p.isTooLarge(r.getHeight(), t.MaxHeight) && s === "ValidMiniWithAutoSeparator" && (n.zoneHeight = t.MaxHeight < f.mini ? f.mini : t.MaxHeight,
+																																									  r.getHeight() - n.zoneHeight - e > f.mini && (n.hSeparatorRequired = !0)),
+																														       i.errorMsg = "",
+																														       !0)
+	}
+	,
+	nt.prototype.prepareDrawerZone = function(n) {
+	    var e = this.uxmgr, t = n.zone, y = n.drawerModel, o = e.getCompound().getDefaultThickness(), f = n.zone, u;
+	    if (n.vSeparatorRequired) {
+		var s = n.zoneWidth, r = {}, i, a = t.getWidth() - s - o;
+		t = c.splitZone(2, this.uxzone.zones.hsplittable, "horizontal", r);
+		u = h.getWZone(t);
+		u.setXDimAuto(!1);
+		u.setWidth(s);
+		f = t;
+		i = r.splitter.getSubZone(r.firstZoneIndex + 1);
+		i.title = "adj-widthBehavior";
+		i.hasXDimAuto || i.setWidth(a);
+		n.separatorRequired = !0
+	    }
+	    if (n.hSeparatorRequired) {
+		var l = n.zoneHeight, r = {}, i, v = t.getHeight() - l - o;
+		t = c.splitZone(2, h.getHZone(t), "vertical", r);
+		u = h.getHZone(t);
+		u.setYDimAuto(!1);
+		u.setHeight(l);
+		f = t;
+		i = r.splitter.getSubZone(r.firstZoneIndex + 1);
+		i.hasYDimAuto || i.setHeight(v);
+		n.separatorRequired = !0
+	    }
+	    return e.errorMsg = "",
+	    f
+	}
+	,
+	nt.prototype.setDrawerModel = function(n) {
+	    var o;
+	    if (this.uxmgr.hasSelectedZone()) {
+		var u = this
+		, t = this.uxmgr
+		, i = t.getSelectedZone()
+		, f = t.compound.zone;
+		if (u.selectedDrawerModel = n !== u.selectedDrawerModel ? n : undefined,
+		    u.selectedDrawerModel) {
+		    var h = this.selectedFacadeModel
+		    , e = this.selectedFacadeColour
+		    , s = this.selectedAccessoryModel
+		    , r = {
+			zone: i,
+			drawerModel: n
+		    };
+		    if (!this.checkAddDrawer(r)) {
+			this.selectedDrawerModel = this.currentDrawer ? this.currentDrawer.getDrawerModel() : undefined;
+			return
+		    }
+		    t.hideTree(f);
+		    this.currentDrawer && i.removeSubItem(this.currentDrawer);
+		    i = this.prepareDrawerZone(r);
+		    (r.vSeparatorRequired || r.hSeparatorRequired) && f.update();
+		    o = function() {
+			s.load().then(function() {
+			    var o = a.createDrawerGroup1(i, n, h, s);
+			    i.add(o);
+			    e.Id !== 0 && (o.facadeColour = e);
+			    u.currentDrawer = o;
+			    u.isEnabled = !0;
+			    o.update();
+			    (r.vSeparatorRequired || r.hSeparatorRequired) && t.selectZone(i);
+			    t.scope.uxZone.notifyChange();
+			    t.scope.uxCloset.notifyChange();
+			    t.displayTree(f);
+			    t.mustBeSaved();
+			    t.updateBOMAndPrice()
+			})
+		    }
+		    ;
+		    e.Id !== 0 ? e.load().then(function() {
+			o()
+		    }) : o()
+		} else
+		    t.hideTree(f),
+		this.currentDrawer && (i.removeSubItem(this.currentDrawer),
+				       this.currentDrawer = undefined),
+		this.isEnabled = !1,
+		t.scope.uxZone.notifyChange(),
+		t.scope.uxCloset.notifyChange(),
+		t.displayTree(f),
+		t.updateBOMAndPrice();
+		t.errorMsg = ""
+	    }
+	}
+	,
+	nt.prototype.setFacadeColour = function(n) {
+	    var t = this;
+	    t.selectedFacadeColour = n !== t.selectedFacadeColour ? n : undefined;
+	    t.currentDrawer && (t.selectedFacadeColour ? n.load().then(function() {
+		t.currentDrawer.setFacadeColour(n);
+		t.uxmgr.mustBeSaved();
+		t.uxmgr.updateBOMAndPrice()
+	    }) : (t.currentDrawer.cancelFacadeColour(),
+		  t.uxmgr.mustBeSaved(),
+		  t.uxmgr.updateBOMAndPrice()));
+	    t.uxmgr.errorMsg = ""
+	}
+	,
+	nt.prototype.setHandleModel = function(n) {
+	    var t = this, i;
+	    if (n !== t.selectedAccessoryModel) {
+		if (i = t.uxmgr,
+		    this.selectedAccessoryModel = n,
+		    t.currentDrawer)
+		    if (i.hideTree(t.currentDrawer),
+			n.Id === 0)
+			throw new Error("[" + applicationName + "] not implemented.");
+		else
+		    n.load().then(function() {
+			t.currentDrawer.setHandleModel(n);
+			i.displayTree(t.currentDrawer);
+			t.uxmgr.mustBeSaved();
+			t.uxmgr.updateBOMAndPrice()
+		    });
+		i.errorMsg = ""
+	    }
+	}
+	,
+	it = function(n, t) {
+	    this.uxmgr = n;
+	    this.uxzone = t;
+	    this.isEnabled = !1;
+	    this.currentHangingBar;
+	    this.selectedModel
+	}
+	,
+	it.prototype.notifyChange = function(n) {
+	    this.currentHangingBar = n;
+	    this.isEnabled = n ? !0 : !1;
+	    this.selectedModel = n ? n.getModel() : undefined
+	}
+	,
+	it.prototype.checkAddHangingBar = function() {
+	    return !0
+	}
+	,
+	it.prototype.setModel = function(n) {
+	    var f;
+	    if (this.uxmgr.hasSelectedZone()) {
+		var t = this
+		, i = this.uxmgr
+		, r = i.getSelectedZone()
+		, u = i.compound.zone;
+		if (t.selectedModel = n !== t.selectedModel ? n : undefined,
+		    t.selectedModel) {
+		    if (f = {
+			zone: r,
+			model: n
+		    },
+			!t.checkAddHangingBar(f)) {
+			t.selectedModel = t.currentHangingBar ? this.currentHangingBar.getModel() : undefined;
+			return
+		    }
+		    i.hideTree(u);
+		    t.currentHangingBar && r.removeSubItem(t.currentHangingBar);
+		    t.selectedModel.load().then(function() {
+			var n = v.create(r, t.selectedModel);
+			r.add(n);
+			n.update();
+			i.scope.uxZone.notifyChange();
+			i.scope.uxCloset.notifyChange();
+			i.displayTree(u);
+			i.mustBeSaved();
+			i.updateBOMAndPrice()
+		    })
+		} else
+		    i.hideTree(u),
+		t.currentHangingBar && (r.removeSubItem(t.currentHangingBar),
+					t.currentHangingBar = undefined),
+		t.isEnabled = !1,
+		i.scope.uxZone.notifyChange(),
+		i.scope.uxCloset.notifyChange(),
+		i.displayTree(u),
+		i.updateBOMAndPrice();
+		i.errorMsg = ""
+	    }
+	}
+	,
+	k = function(n) {
+	    var t = this;
+	    this.uxmgr = n;
+	    this.scope = n.scope;
+	    t.isEnabled = !1;
+	    t.title = "";
+	    t.width;
+	    t.height;
+	    t.canSetWidth;
+	    t.canSetHeight;
+	    t.widthAutoSize;
+	    t.heightAutoSize;
+	    t.canSetWidthAutoSize;
+	    t.canSetHeightAutoSize;
+	    t.minWidth;
+	    t.maxWidth;
+	    t.minHeight;
+	    t.maxHeight;
+	    t.canChangeBackPanel;
+	    t.selectedBackModel = s.getBackPanelModelTable()[0];
+	    t.selectedBackColour = null ;
+	    t.lockDimUpdate = !1;
+	    t.uxDrawer = new nt(n,t);
+	    t.uxHangingBar = new it(n,t);
+	    t.zones = {
+		selected: undefined,
+		module: undefined,
+		section: undefined,
+		fillable: undefined,
+		hsplittable: undefined,
+		vsplittable: undefined,
+		backPanelRoot: undefined
+	    }
+	}
+	,
+	k.prototype._resolvesZones = function() {
+	    var n = this;
+	    n.zones.selected = n.uxmgr.getSelectedZone();
+	    n.zones.module = n.zones.selected ? h.getWZone(n.zones.selected) : undefined;
+	    n.zones.section = n.zones.selected ? h.getHZone(n.zones.selected) : undefined;
+	    n.zones.fillable = n.zones.selected;
+	    n.zones.hsplittable = n.zones.module;
+	    n.zones.vsplittable = n.zones.section;
+	    n.zones.backPanelRoot = n.zones.selected ? h.getRootOfBackPanel(n.zones.selected) : undefined
+	}
+	,
+	k.prototype._notifyWidthChange = function(n) {
+	    n && (this.width = Math.round(n.xdim * 10) / 10);
+	    this.canSetWidth = this.canSetWidthAutoSize && !this.widthAutoSize
+	}
+	,
+	k.prototype._notifyHeightChange = function(n) {
+	    n && (this.height = Math.round(n.ydim * 10) / 10);
+	    this.canSetHeight = this.canSetHeightAutoSize && !this.heightAutoSize
+	}
+	,
+	k.prototype._notifyDimBoundsChange = function(n) {
+	    if (n) {
+		var t = w.getZoneDimensionBounds(n, this.uxmgr.getZoneWidthRule(), this.uxmgr.getZoneHeightRule());
+		this.minWidth = t.minWidth;
+		this.maxWidth = t.maxWidth;
+		this.minHeight = t.minHeight;
+		this.maxHeight = t.maxHeight
+	    }
+	}
+	,
+	k.prototype.canDeleteLeftSeparator = function(n) {
+	    if (!n || !n.parentZone)
+		return !1;
+	    var t = n.parentZone.splitter
+	    , i = t.getSubZoneIndex(n);
+	    return t && t.getSubZoneIndex(n) > 0
+	}
+	,
+	k.prototype.canDeleteRightSeparator = function(n) {
+	    if (!n || !n.parentZone)
+		return !1;
+	    var t = n.parentZone.splitter
+	    , i = t.getSubZoneIndex(n)
+	    , r = t.getSubZoneCount();
+	    return t && t.getSubZoneIndex(n) < t.getSubZoneCount() - 1
+	}
+	,
+	k.prototype.canDeleteBottomSeparator = function(n, t) {
+	    return !n || !n.parentZone ? !1 : t && !t.isOff
+	}
+	,
+	k.prototype.canDeleteTopSeparator = function(n, t) {
+	    return !n || !n.parentZone || h.isFirstZone(n) ? !1 : t && !t.isOff
+	}
+	,
+	k.prototype.getModuleZone = function() {
+	    return h.getWZone(this.uxmgr.getSelectedZone())
+	}
+	,
+	k.prototype.getSectionZone = function() {
+	    return h.getHZone(this.uxmgr.getSelectedZone())
+	}
+	,
+	k.prototype._getSubItemByType = function(n, t) {
+	    for (var r = n.getSubCount(), i = 0; i < r; i++)
+		if (n.getSub(i).getEzType && n.getSub(i).getEzType() === t)
+		    return n.getSub(i);
+	    return undefined
+	}
+	,
+	k.prototype.notifyChange = function() {
+	    var n = this, c = this.uxmgr, o = d.compound.getClosetModel().FHBackPanelMode, t, i, u, f, e, r;
+	    n._resolvesZones();
+	    n.lockDimUpdate = !0;
+	    t = n.zones.section ? h.getZoneBelow(n.zones.section) : undefined;
+	    i = n.zones.section ? h.getZoneAbove(n.zones.section) : undefined;
+	    n.isEnabled = n.zones.selected && !n.zones.selected.isOff;
+	    n.title = n.zones.selected ? n.zones.selected.title : "(no zone)";
+	    n.canSetWidthAutoSize = n.zones.module && !h.isFirstZone(n.zones.module);
+	    n.widthAutoSize = n.zones.module && n.zones.module.hasXDimAuto;
+	    n.canSetHeightAutoSize = n.isEnabled && !h.isFirstZone(n.zones.section) && (t && !t.isOff || i && !i.isOff);
+	    n.heightAutoSize = n.isEnabled && n.zones.section && n.zones.section.hasYDimAuto;
+	    n._notifyDimBoundsChange(n.zones.selected);
+	    n._notifyWidthChange(n.zones.module);
+	    n._notifyHeightChange(n.zones.section);
+	    n.canSplitVerticaly = n.isEnabled && n.zones.hsplittable && n.zones.hsplittable.isEmpty();
+	    n.canSplitHorizontaly = o ? n.isEnabled && n.zones.vsplittable && n.zones.selected.isEmpty() : n.isEnabled && n.zones.vsplittable && n.zones.vsplittable.isEmpty();
+	    n.canDeleteLeftSep = n.isEnabled && n.canDeleteLeftSeparator(n.zones.module);
+	    n.canDeleteRightSep = n.isEnabled && n.canDeleteRightSeparator(n.zones.module);
+	    n.canDeleteBottomSep = n.isEnabled && n.canDeleteBottomSeparator(n.zones.section, t);
+	    n.canDeleteTopSep = n.isEnabled && n.canDeleteTopSeparator(n.zones.section, i);
+	    n.canChangeBackPanel = n.isEnabled && n.zones.selected && !n.zones.selected.isSplitted();
+	    n.isEnabled && n.zones.selected && (u = n._getSubItemByType(n.zones.selected, "DrawerGroup"),
+						n.uxDrawer.notifyChange(u),
+						f = n._getSubItemByType(n.zones.selected, "HangingBar"),
+						n.uxHangingBar.notifyChange(f),
+						n.zones.backPanelRoot ? (e = n.zones.backPanelRoot.getCompound(),
+									 r = h.getBackPanel(n.zones.backPanelRoot),
+									 n.selectedBackModel = r.getMaterialModel(),
+									 n.selectedBackColour = r.getColour() === e.defaultColour ? null : r.getColour()) : (n.selectedBackModel = s.getBackPanelModelTable()[0],
+																			     n.selectedBackColour = null ));
+	    n.lockDimUpdate = !1
+	}
+	,
+	k.prototype.updateDimension = function() {
+	    var n = this;
+	    if (n.uxmgr.hasSelectedZone() && !n.lockDimUpdate) {
+		n._resolvesZones();
+		var t = n.uxmgr.scope
+		, u = n.zones.module
+		, f = n.zones.section
+		, i = !1
+		, r = !1;
+		!n.widthAutoSize && t.myZoneDimForm.zoneWidth.$valid && (i = c.setZoneWidth(u, n.width));
+		!n.heightAutoSize && t.myZoneDimForm.zoneHeight.$valid && (r = c.setZoneHeight(f, n.height));
+		(i || r) && (n.uxmgr.mustBeSaved(),
+			     n.uxmgr.updateBOMAndPrice(),
+			     n.scope.uxCloset.notifyChange());
+		n.uxmgr.errorMsg = ""
+	    }
+	}
+	,
+	k.prototype.updateWidthAutoSize = function() {
+	    var n = this, t;
+	    n.uxmgr.hasSelectedZone() && (t = n.zones.module,
+					  c.setZoneAutoSize(t, !n.widthAutoSize, n.maxWidth) && (n.widthAutoSize = !n.widthAutoSize,
+												 n._notifyDimBoundsChange(n.zones.selected),
+												 this._notifyWidthChange(t),
+												 n.scope.uxCloset.notifyChange(),
+												 n.uxmgr.mustBeSaved()),
+					  n.uxmgr.errorMsg = "")
+	}
+	,
+	k.prototype.updateHeightAutoSize = function() {
+	    if (this.uxmgr.hasSelectedZone()) {
+		var n = this.getSectionZone();
+		c.setZoneAutoSize(n, !this.heightAutoSize) && (this.heightAutoSize = !this.heightAutoSize,
+							       this._notifyHeightChange(n),
+							       this._notifyDimBoundsChange(this.zones.selected),
+							       this.scope.uxCloset.notifyChange(),
+							       this.uxmgr.mustBeSaved());
+		this.uxmgr.errorMsg = ""
+	    }
+	}
+	,
+	k.prototype.split = function(n) {
+	    var i = this, f;
+	    if (i.zones.selected) {
+		var r = i.uxmgr.compound, e = r.getClosetModel().FHBackPanelMode, t = i.uxmgr, u;
+		if (u = n === "horizontal" ? w.canSplit(i.zones.selected, t.getZoneWidthRule().mini, r.getDefaultThickness(), n) : w.canSplit(i.zones.selected, t.getZoneHeightRule().mini, r.getDefaultThickness(), n),
+		    !u) {
+		    t.errorMsg = "La zone ne peut plus être divisée car elle est trop petite.";
+		    return
+		}
+		t.hideTree(r.zone);
+		f = n === "horizontal" ? c.splitZone(2, i.zones.hsplittable, n) : e ? c.splitZone(2, i.zones.selected, n) : c.splitZone(2, i.zones.vsplittable, n);
+		t.displayTree(r.zone);
+		t.selectZone(f);
+		t.scope.uxCloset.notifyChange();
+		t.mustBeSaved();
+		t.updateBOMAndPrice();
+		t.errorMsg = ""
+	    }
+	}
+	,
+	k.prototype.removeVerticalSeparator = function(n) {
+	    var f = this, t, i, u, e;
+	    if (f.zones.selected) {
+		if (t = this.uxmgr,
+		    i = f.zones.module,
+		    !i.isEmpty()) {
+		    var r = i.parentZone.splitter
+		    , o = r.getSubZoneIndex(i)
+		    , s = r.getAdjSubZoneIndex(o, n);
+		    if (!r.subZones[s].isEmpty()) {
+			alert("Les 2 modules doivent être vide pour pouvoir supprimer le séparateur.");
+			return
+		    }
+		}
+		u = i.getCompound().zone;
+		t.hideTree(u);
+		e = c.removeSeparator(i, n);
+		t.displayTree(u);
+		t.selectZone(e);
+		this.scope.uxCloset.notifyChange();
+		t.mustBeSaved();
+		t.updateBOMAndPrice();
+		t.errorMsg = ""
+	    }
+	}
+	,
+	k.prototype.removeHorizontalSeparator = function(n) {
+	    var r = this, e, o, f, s;
+	    if (r.zones.selected) {
+		var t = this.uxmgr
+		, i = r.zones.section
+		, u = i.parentZone.splitter;
+		if (i.hasContent() && (e = u.getSubZoneIndex(i),
+				       o = u.getAdjSubZoneIndex(e, n),
+				       u.subZones[o].hasContent())) {
+		    alert("Les 2 sections doivent être vide pour pouvoir supprimer le séparateur.");
+		    return
+		}
+		f = r.zones.module;
+		t.hideTree(f);
+		s = c.removeSeparator(i, n);
+		t.displayTree(f);
+		t.selectZone(s);
+		this.scope.uxCloset.notifyChange();
+		t.mustBeSaved();
+		t.updateBOMAndPrice();
+		t.errorMsg = ""
+	    }
+	}
+	,
+	k.prototype.changeBackModel = function() {
+	    var t = this, u, e, l;
+	    if (t.zones.selected) {
+		var i = t.uxmgr, r = t.zones.selected, n = t.zones.backPanelRoot, o = r.getCompound().getClosetModel().FHBackPanelMode, f;
+		if (f = o ? t.zones.hsplittable : n || r,
+		    u = t.selectedBackModel,
+		    e = r,
+		    u.Id > 0) {
+		    if (r.hasContent() && !w.canSetBackPanel(r, u, i.getClosetDepthRule().mini)) {
+			i.errorMsg = "La profondeur du placard est trop petite. Le fond ne peut pas être appliqué.";
+			t.selectedBackModel = n ? h.getBackPanel(n).getMaterialModel() : s.getBackPanelModelTable()[0];
+			return
+		    }
+		    i.hideTree(f);
+		    n ? (l = h.getBackPanel(n),
+			 l.setMaterialModel(u),
+			 n.update()) : e = o ? r.getCompound().getClosetModel().ModelClass !== "FullVerPrior" ? c.createBackPanel(t.zones.hsplittable, u) : c.createBackPanel(t.zones.hsplittable, u) : c.createBackPanel(r, u)
+		} else
+		    i.hideTree(f),
+		n && (c.removeBackPanel(n),
+		      e = n.isSplitted() && n.splitter.getOrientation() === "vertical" ? r : n);
+		t.scope.uxCloset.notifyChange();
+		i.displayTree(f);
+		i.selectZone(e);
+		i.mustBeSaved();
+		i.updateBOMAndPrice()
+	    }
+	}
+	,
+	k.prototype.setBackColour = function(n) {
+	    var t = this;
+	    if (t.zones.backPanelRoot) {
+		var u = t.uxmgr, f = t.zones.backPanelRoot.getCompound(), i = h.getBackPanel(t.zones.backPanelRoot), r;
+		n && i.getColour().Id !== n.Id ? (r = n,
+						  t.selectedBackColour = n,
+						  i.hasOwnColour(!0)) : (r = f.defaultColour,
+									 t.selectedBackColour = null ,
+									 i.hasOwnColour(!1));
+		r.load().then(function() {
+		    i.setColour(r);
+		    u.mustBeSaved();
+		    u.updateBOMAndPrice()
+		})
+	    }
+	}
+	,
+	g = function(n) {
+	    this.uxMgr = n;
+	    this.items;
+	    this.categories;
+	    this.selectedCategory;
+	    this.showDialog = !1;
+	    this.cart
+	}
+	,
+	g.prototype.loadItems = function() {
+	    var n = this;
+	    o.getAddons(n.selectedCategory.Id).then(function(t) {
+		var i, r;
+		for (n.items = t.data,
+		     r = t.data.length,
+		     i = 0; i < r; i++)
+		    n.items[i].Description = u.trustAsHtml(n.items[i].Description)
+	    }, function() {
+		throw new Error("[" + applicationName + "] Cannot load add-ons list.");
+	    })
+	}
+	,
+	g.prototype.categoryFilter = function(n) {
+	    return function(t) {
+		return n && (n.Id === 0 || t.CategoryId === n.Id) ? !0 : !1
+	    }
+	}
+	,
+	g.prototype.lazyLoadItems = function() {
+	    var n = this;
+	    n.items || o.getAddonCategories().then(function(t) {
+		var i, r;
+		for (n.categories = [{
+		    Id: 0,
+		    Title: "[-- Toutes --]"
+		}],
+		     r = t.data.length,
+		     i = 0; i < r; i++)
+		    n.categories.push(t.data[i]);
+		n.selectedCategory = n.categories[0];
+		n.loadItems()
+	    }, function() {
+		throw new Error("[" + applicationName + "] Cannot load add-on categories.");
+	    })
+	}
+	,
+	g.prototype.addInCart = function(n) {
+	    var t = this;
+	    t.uxMgr.project.cart.add(n);
+	    t.uxMgr.updateBOMAndPrice()
+	}
+	,
+	g.prototype.removeFromCart = function(n) {
+	    var t = this;
+	    t.uxMgr.project.cart.remove(n.Id);
+	    t.uxMgr.updateBOMAndPrice()
+	}
+	,
+	g.prototype.updateCartItem = function(n) {
+	    var t = this;
+	    t.uxMgr.project.cart.updateQty(n) && t.uxMgr.updateBOMAndPrice()
+	}
+	,
+	g.prototype.getCart = function() {
+	    return this.uxMgr.project ? this.uxMgr.project.cart.items : []
+	}
+	,
+	g.prototype.hasCategories = function() {
+	    return this.categories && this.categories.length > 1
+	}
+	,
+	b = function(t) {
+	    var i = e.getThreeEnv(), r, u;
+	    this.debug = "off";
+	    this.scope = t;
+	    this.project;
+	    this.compound;
+	    this.errorMsg = "";
+	    this.shop;
+	    this.brandId = 0;
+	    this._raycaster = new THREE.Raycaster;
+	    this._mousePos = new THREE.Vector3;
+	    this._hilightedZone;
+	    this._selectedZone;
+	    this._closetWidthRule;
+	    this._closetHeightRule;
+	    this._closetDepthRule;
+	    this._zoneWidthRule;
+	    this._zoneHeightRule;
+	    this._hasAutoVSeparator = !1;
+	    this._hasAutoHSeparator = !1;
+	    this._DGWidthBehavior = "ValidMiniOnly";
+	    this._DGHeightBehavior = "ValidMiniOnly";
+	    this._userCanOperateBackPanel = !0;
+	    this._userCanColourBackPanel = !0;
+	    this.BOM = [];
+	    r = this;
+	    u = 0;
+	    n(i.sceneContainer).bind("mousedown", function(n) {
+		u = n.timeStamp
+	    });
+	    n(i.sceneContainer).bind("click", function(n) {
+		var i = n.timeStamp - u;
+		i < 250 && (r._hilightedZone ? r.selectZone(r._hilightedZone) : r.selectZone(undefined),
+			    t.$apply())
+	    });
+	    n(i.sceneContainer).bind("mousemove", function(u) {
+		var h = i.getSceneWidth(), c = i.getSceneHeight(), o = r._mousePos, l = i.getSceneCssOffs().left, a = i.getSceneCssOffs().top, s, f, e;
+		if (o.x = (u.clientX - l) / h * 2 - 1,
+		    o.y = -((u.clientY - a) / c) * 2 + 1,
+		    s = r._raycaster,
+		    s.setFromCamera(o, i.camera),
+		    f = s.intersectObjects(i.scene.children),
+		    r._hilightedZone = undefined,
+		    t.dbgIntersecteds = "",
+		    f.length > 0) {
+		    for (e = 0; e < f.length && !r._hilightedZone; e++)
+			f[e].object.userData.zone && (r._hilightedZone = f[e].object.userData.zone,
+						      n(i.sceneContainer).css("cursor", "pointer"));
+		    r._hilightedZone || n(i.sceneContainer).css("cursor", "default")
+		} else
+		    n(i.sceneContainer).css("cursor", "default")
+	    });
+	    t.colours;
+	    t.selectedColour;
+	    t.selectedMaterial;
+	    t.coloursWithNone;
+	    t.projectShop;
+	    t.isSaved = !0;
+	    t.hasToolPanelShown = !1;
+	    t.closetTabActive;
+	    t.zoneTabActive;
+	    t.drawerTabActive;
+	    this.componentTools = [];
+	    this.selectedComponentTool;
+	    this.msgDialogIsShown = !1;
+	    this.dialogMsg = "";
+	    this.hasPendingOp = !1;
+	    this.hasOrderRedirection = !1
+	}
+	,
+	b.prototype.getCompound = function() {
+	    return this.compound
+	}
+	,
+	b.prototype.getProject = function() {
+	    return this.scope.project
+	}
+	,
+	b.prototype.setDGWidthBehavior = function(n) {
+	    this._DGWidthBehavior = n
+	}
+	,
+	b.prototype.getDGWidthBehavior = function() {
+	    return this._DGWidthBehavior
+	}
+	,
+	b.prototype.setDGHeightBehavior = function(n) {
+	    this._DGHeightBehavior = n
+	}
+	,
+	b.prototype.getDGHeightBehavior = function() {
+	    return this._DGHeightBehavior
+	}
+	,
+	b.prototype.mustBeSaved = function() {
+	    this.debug === "off" && (this.scope.isSaved = !1)
+	}
+	,
+	b.prototype.updateBOMAndPrice = function() {
+	    var n = this.scope, i = c.getBOM(n.project), r = n.project.getVATRate(), t;
+	    this.BOM = i.getItems();
+	    t = i.getTotalPrice();
+	    n.exVattotalPrice = t;
+	    n.vattotalPrice = t * (1 + r / 100)
+	}
+	,
+	b.prototype.prepareComponentTools = function(n, t) {
+	    this.componentTools = [];
+	    n && this.componentTools.push({
+		id: 0,
+		title: "Tiroirs",
+		html: "/html/drawer-component.html",
+		isEnabled: !0
+	    });
+	    t && this.componentTools.push({
+		id: 1,
+		title: "Penderies",
+		html: "/html/hangingBar-component.html",
+		isEnabled: !0
+	    });
+	    this.selectedComponentTool = this.componentTools.length > 0 ? this.componentTools[0] : undefined
+	}
+	,
+	b.prototype.displayTree = function(n) {
+	    var t, i;
+	    if (n) {
+		if (n.display && n.display(),
+		    n.getSub)
+		    for (i = n.getSubCount(),
+			 t = 0; t < i; t++)
+			this.displayTree(n.getSub(t));
+		if (n.getSubZone)
+		    for (i = n.getSubZoneCount(),
+			 t = 0; t < i; t++)
+			this.displayTree(n.getSubZone(t))
+	    }
+	}
+	,
+	b.prototype.hideTree = function(n) {
+	    var t, i;
+	    if (n.hide && n.hide(),
+		n.getSub)
+		for (i = n.getSubCount(),
+		     t = 0; t < i; t++)
+		    this.hideTree(n.getSub(t));
+	    if (n.getSubZone)
+		for (i = n.getSubZoneCount(),
+		     t = 0; t < i; t++)
+		    this.hideTree(n.getSubZone(t))
+	}
+	,
+	b.prototype.setSceneMode = function(n) {
+	    var t = e.getThreeEnv(), i;
+	    if (t.sceneMode !== n) {
+		if (n === "work")
+		    t.sceneMode = n;
+		else if (n === "rendering")
+		    t.sceneMode = n;
+		else
+		    throw new Error("[" + applicationName + "] Unsupported mode '" + n + "'. Cannot change the scene mode.");
+		var r = this.compound
+		, u = this.scope.project.getGround()
+		, f = c.getExplorer();
+		u.hide();
+		u.display();
+		i = function(n) {
+		    n.updateThreeMat && n.updateThreeMat()
+		}
+		;
+		f.doActionOnTree(r.gzone, i);
+		f.doActionOnTree(r.zone, i)
+	    }
+	}
+	,
+	b.prototype.selectZone = function(n) {
+	    var i = angular.isDefined(this._selectedZone), t;
+	    this._selectedZone && this._selectedZone.unselect();
+	    this._selectedZone = n;
+	    n ? (this.setSceneMode("work"),
+		 n.select()) : (this.setSceneMode("rendering"),
+				this._hilightedZone = undefined,
+				this._selectedZone = undefined);
+	    t = i ? n ? "" : "closetTab" : n ? "zoneTab" : "";
+	    this._onSelectionChanged(t)
+	}
+	,
+	b.prototype._onSelectionChanged = function(n) {
+	    var t = this
+	    , i = t.scope
+	    , r = t._selectedZone;
+	    n !== "" && t.toggleToolPanel(n);
+	    i.uxZone.notifyChange()
+	}
+	,
+	b.prototype.hasSelectedZone = function() {
+	    return this._selectedZone ? !0 : !1
+	}
+	,
+	b.prototype.getSelectedZone = function() {
+	    return this._selectedZone
+	}
+	,
+	b.prototype.get1stModuleZone = function() {
+	    var n = this.compound.zone.splitter.subZones[0];
+	    return n.splitter ? n.splitter.subZones[0] : n
+	}
+	,
+	b.prototype.activeTab = function(n) {
+	    var t = this.scope;
+	    t.closetTabActive = n === "closetTab";
+	    t.zoneTabActive = n === "zoneTab";
+	    t.drawerTabActive = n === "drawerTab"
+	}
+	,
+	b.prototype.getCurrentTab = function() {
+	    var n = this.scope;
+	    return n.closetTabActive ? "closetTab" : n.zoneTabActive ? "zoneTab" : n.drawerTabActive ? "drawerTab" : ""
+	}
+	,
+	b.prototype.toggleToolPanel = function(n, t) {
+	    var i = this.scope;
+	    !i.hasToolPanelShown && i.canEditProject ? i.hasToolPanelShown = !0 : this.getCurrentTab() === n && t && (i.hasToolPanelShown = !1);
+	    this.activeTab(n)
+	}
+	,
+	b.prototype.setClosetModel = function(n) {
+	    var t = this;
+	    t.setClosetWidthRule(n.MinClosetWidth, n.MaxClosetWidth);
+	    t.setClosetHeightRule(n.MinClosetHeight, n.MaxClosetHeight);
+	    t.setClosetDepthRule(n.MinClosetDepth, n.MaxClosetDepth);
+	    t.setZoneWidthRule(n.MinZoneWidth);
+	    t.setZoneHeightRule(n.MinZoneHeight);
+	    t.setDGWidthBehavior(n.DGWidthBehaviorLabel);
+	    t.setDGHeightBehavior(n.DGHeightBehaviorLabel);
+	    t._userCanOperateBackPanel = n.UserCanOperateBackPanel;
+	    t._userCanColourBackPanel = n.UserCanColourBackPanel
+	}
+	,
+	b.prototype.userCanOperateBackPanel = function() {
+	    var n = this;
+	    return n.scope.currentMember ? n.scope.currentMember.RoleWeight < 50 ? n._userCanOperateBackPanel : !0 : n._userCanOperateBackPanel
+	}
+	,
+	b.prototype.userCanColourBackPanel = function() {
+	    var n = this;
+	    return n.scope.currentMember ? n.scope.currentMember.RoleWeight < 50 ? n._userCanColourBackPanel : !0 : n._userCanColourBackPanel
+	}
+	,
+	b.prototype.setClosetWidthRule = function(n, t) {
+	    this._closetWidthRule = {
+		mini: n,
+		maxi: t
+	    }
+	}
+	,
+	b.prototype.setClosetHeightRule = function(n, t) {
+	    this._closetHeightRule = {
+		mini: n,
+		maxi: t
+	    }
+	}
+	,
+	b.prototype.setClosetDepthRule = function(n, t) {
+	    this._closetDepthRule = {
+		mini: n,
+		maxi: t
+	    }
+	}
+	,
+	b.prototype.setZoneWidthRule = function(n) {
+	    this._zoneWidthRule = {
+		mini: n,
+		maxi: Infinity
+	    }
+	}
+	,
+	b.prototype.setZoneHeightRule = function(n) {
+	    this._zoneHeightRule = {
+		mini: n,
+		maxi: Infinity
+	    }
+	}
+	,
+	b.prototype.getClosetWidthRule = function() {
+	    return this._closetWidthRule
+	}
+	,
+	b.prototype.getClosetHeightRule = function() {
+	    return this._closetHeightRule
+	}
+	,
+	b.prototype.getClosetDepthRule = function() {
+	    return this._closetDepthRule
+	}
+	,
+	b.prototype.getZoneWidthRule = function() {
+	    return this._zoneWidthRule
+	}
+	,
+	b.prototype.getZoneHeightRule = function() {
+	    return this._zoneHeightRule
+	}
+	,
+	b.prototype.hasAutoVSeparator = function() {
+	    return this._hasAutoVSeparator
+	}
+	,
+	b.prototype.setHasAutoVSeparator = function(n) {
+	    this._hasAutoVSeparator = n
+	}
+	,
+	b.prototype.hasAutoHSeparator = function() {
+	    return this._hasAutoHSeparator
+	}
+	,
+	b.prototype.setHasAutoHSeparator = function(n) {
+	    this._hasAutoHSeparator = n
+	}
+	,
+	b.prototype.createClosetValidatorDimArgs = function() {
+	    return {
+		compound: this.compound,
+		closetWidthRule: this.getClosetWidthRule(),
+		closetHeightRule: this.getClosetHeightRule(),
+		closetDepthRule: this.getClosetDepthRule(),
+		zoneWidthRule: this.getZoneWidthRule(),
+		zoneHeightRule: this.getZoneHeightRule()
+	    }
+	}
+	,
+	b.prototype.openMsgDialog = function(n) {
+	    this.scope.showBgDialog = !0;
+	    this.dialogMsg = n;
+	    this.msgDialogIsShown = !0
+	}
+	,
+	b.prototype.closeMsgDialog = function() {
+	    this.msgDialogIsShown = !1;
+	    this.scope.showBgDialog = !1;
+	    this.dialogMsg = ""
+	}
+	,
+	b.prototype.startPendingOp = function() {
+	    this.hasPendingOp = !0
+	}
+	,
+	b.prototype.stopPendingOp = function() {
+	    this.hasPendingOp = !1
+	}
+	,
+	b.prototype.setHasOrderRedirection = function(n) {
+	    this.hasOrderRedirection = n
+	}
+	,
+	b.prototype.orderCloset = function() {
+	    var n = this
+	    , t = n.scope;
+	    o.isAuthenticate().then(function(i) {
+		if (!i.data) {
+		    t.openLoginDialog(!0);
+		    return
+		}
+		t.isSaved && n.getProject().getId() !== 0 ? f.location.href = n.hasOrderRedirection ? o.getOrderRedirectionSvcUrl(t.project.getId()) : "/umbraco#/EZCloset/MainTree/projectList/Projects-" + n.brandId : t.openSaveDialog()
+	    })
+	}
+	,
+	{
+	    initUXManager: function(n, t) {
+		return d = new b(n),
+		rt = new g(d),
+		t && (d.debug = t),
+		n.uxMgr = d,
+		n.uxAddon = rt,
+		d
+	    },
+	    setCurrentProject: function(n) {
+		if (!d)
+		    throw new Error("[" + applicationName + "] UX manager is not initialized. Call menuiserieUXFactory.initUXManager() method before.");
+		d.project = n
+	    },
+	    setCurrentCompound: function(n) {
+		if (!d)
+		    throw new Error( "[" + applicationName + "] UX manager is not initialized. Call menuiserieUXFactory.initUXManager() method before." );
+		d.compound = n;
+		d.scope.uxCloset = ut = new tt(d);
+		d.scope.uxZone = ft = new k(d)
+	    },
+	    getUXMgr: function() {
+		if (!d)
+		    throw new Error( "[" + applicationName + "] UX manager is not initialized. Call menuiserieUXFactory.initUXManager() method before." );
+		return d
+	    }
+	}
+    }
+    function u() {
+	return {
+	    addClass: function(t, i, r) {
+		n(t).animate({
+		    right: 0
+		}, "normal", r)
+	    },
+	    removeClass: function(t, i, r) {
+		n(t).animate({
+		    right: "-480px"
+		}, "normal", r)
+	    }
+	}
+    }
+    function f() {
+	return {
+	    addClass: function(t, i, r) {
+		n(t).animate({
+		    right: "480px"
+		}, "normal", r)
+	    },
+	    removeClass: function(t, i, r) {
+		n(t).animate({
+		    right: 0
+		}, "normal", r)
+	    }
+	}
+    }
+    var t = angular.module("simonMenuiserie.UX", ["simonMenuiserie.Core"])
+    , n = jQuery;
+    t.directive("ngEnter", function() {
+	return function(n, t, i) {
+	    t.bind("keydown keypress", function(t) {
+		t.which === 13 && (n.$apply(function() {
+		    n.$eval(i.ngEnter)
+		}),
+				   t.preventDefault())
+	    })
+	}
+    });
+    t.directive("ezSliderVal", ["$log", "$timeout", "$parse", i]);
+    t.factory("menuiserieUXFactory", ["$timeout", "$filter", "$log", "$sce", "$window", "menuiserieEnv", "menuiserieWebService", "menuiserieDataFactory", "menuiserieClosetBrowser", "menuiserieClosetFactory", "menuiseriePanelFactory", "menuiserieCompoundFactory", "menuiserieHangingBarFactory", "menuiserieProjectFactory", "menuiserieBoundValidator", "menuiserieClosetValidator", r]);
+    t.animation(".anim-showToolPanel", [u]);
+    t.animation(".anim-showPricePanel", [f])
+})();

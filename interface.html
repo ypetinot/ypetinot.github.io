@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+
+<html lang="">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.7, minimum-scale=0.7, maximum-scale=0.7, user-scalable=no, shrink-to-fit=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">    
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta NAME="robots" CONTENT="noindex,nofollow">
+    <meta name="description" content="Un projet d’ameublement ? Optez pour le sur-mesure. Testez notre configurateur en ligne, gratuitement et sans engagement." />
+    <title>Cr&#233;ez votre meuble sur-mesure</title>
+	
+    <link rel="stylesheet" href="/css/ui.css">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/material.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.1.2/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" href="/css/lity.css">
+    <script src="/js/fullscreen.js"></script>
+    <script src="/js/material.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-cookies.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/threejs/r71/three.min.js"></script>
+    <script src="/js/three.js/OrbitControls.js"></script>
+    <script src="/js/three.js/loaders/OBJLoader.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script>
+    <script src="https://cdn.firebase.com/libs/angularfire/2.0.1/angularfire.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+    
+    <script src="/js/service.js"></script>
+    <!-- regenerate minified script <script src="/js/service.min.js"></script> -->
+ 
+    <script src="/js/core.js"></script>
+    <!-- regenerate minified script <script src="/js/core.min.js"></script> -->
+    
+    <script src="/js/ux.js"></script>
+    <!-- regenerate minified script <script src="/js/ux.min.js"></script> -->
+
+    <script src="/js/controller.js"></script>
+    <!-- regenerate minified script <script src="/js/controller.min.js"></script> -->
+    
+    <script src="/js/app.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js?onload=vcRecaptchaApiLoaded&render=explicit" async defer></script>
+    <script src="/js/angular/angular-recaptcha.min.js"></script>
+    <script src="/js/lity.min.js"></script>
+    <noscript>
+      This should not happen
+    </noscript>
+
+    <style>
+        body { overflow: hidden; }
+		#rightPanel, .logoContainer, .panelTitle, .tab, .nomenclatureBtn { background: #231f20  ; }
+
+        .ez-repeat-animation.ng-enter {
+            transition: 0.8s linear all;
+            opacity: 0;
+        }
+        .ez-repeat-animation.ng-enter.ng-enter-active {
+            opacity: 1;
+        }
+
+        .ez-repeat-animation.ng-leave {
+            transition: 0.8s linear all;
+            opacity: 1;
+        }
+        .ez-repeat-animation.ng-leave.ng-leave-active {
+            opacity: 0;
+        }
+
+        .autoBtn { background: #3f51b5  !important; }
+        .freeBtn { background: #3f51b5  !important; }
+        .divideZonesBtn { background: #3f51b5  ; }
+        .separatorBtn { background: #f44336  !important; }
+        .orderBtn a { background: #4caf50  ; }
+    </style>
+
+</head>
+
+  <script>
+
+    // Initialize Firebase
+    var config = {
+    apiKey: "AIzaSyBlxeJj3ePlAUJc7ahuSEqZAn2_LZxxv9I",
+    authDomain: "menuiserie-e7118.firebaseapp.com",
+    databaseURL: "https://menuiserie-e7118.firebaseio.com",
+    storageBucket: "menuiserie-e7118.appspot.com",
+    };
+    firebase.initializeApp(config);
+    
+    var __menuiserieCtxt__ = {
+    key:            'default',
+    umbPageNodeId: '1118',
+    currentMemberID: getCurrentUserId(),
+    openProjectId: parseInt('0'),
+    closetModelId: parseInt('0'),
+    action: '',
+    debug: 'off',
+    useSSL: 'off',
+    printUrl: '',
+    helpUrl: ''
+    }
+  </script>
+  
+  <body ng-app="simonMenuiserieApp">
+
+<style type="text/css">
+    .icon-rotate-90 {
+        filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+        -webkit-transform: rotate(90deg);
+        -moz-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        -o-transform: rotate(90deg);
+        transform: rotate(90deg);
+    }
+</style>
+
+<!-- Turn device Info -->
+<div class="info">
+	<p>Merci de tourner votre tablette en mode Paysage, ou agrandir horizontalement la fenêtre de votre navigateur.</p>
+</div>
+
+<div layout="row" ng-controller="menuiserieEngineController">
+
+  <div ng-cloak>
+    <md-content>
+      <md-tabs md-dynamic-height md-border-bottom>
+	<md-tab label="one">
+	  <md-content class="md-padding">
+	    <h1 class="md-display-2">Tab One</h1>
+	    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis ante augue. Phasellus volutpat neque ac dui mattis vulputate. Etiam consequat aliquam cursus. In sodales pretium ultrices. Maecenas lectus est, sollicitudin consectetur felis nec, feugiat ultricies mi.</p>
+	  </md-content>
+	</md-tab>
+	<md-tab label="two">
+	  <md-content class="md-padding">
+	    <h1 class="md-display-2">Tab Two</h1>
+	    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis ante augue. Phasellus volutpat neque ac dui mattis vulputate. Etiam consequat aliquam cursus. In sodales pretium ultrices. Maecenas lectus est, sollicitudin consectetur felis nec, feugiat ultricies mi. Aliquam erat volutpat. Nam placerat, tortor in ultrices porttitor, orci enim rutrum enim, vel tempor sapien arcu a tellus. Vivamus convallis sodales ante varius gravida. Curabitur a purus vel augue ultrices ultricies id a nisl. Nullam malesuada consequat diam, a facilisis tortor volutpat et. Sed urna dolor, aliquet vitae posuere vulputate, euismod ac lorem. Sed felis risus, pulvinar at interdum quis, vehicula sed odio. Phasellus in enim venenatis, iaculis tortor eu, bibendum ante. Donec ac tellus dictum neque volutpat blandit. Praesent efficitur faucibus risus, ac auctor purus porttitor vitae. Phasellus ornare dui nec orci posuere, nec luctus mauris semper.</p>
+	    <p>Morbi viverra, ante vel aliquet tincidunt, leo dolor pharetra quam, at semper massa orci nec magna. Donec posuere nec sapien sed laoreet. Etiam cursus nunc in condimentum facilisis. Etiam in tempor tortor. Vivamus faucibus egestas enim, at convallis diam pulvinar vel. Cras ac orci eget nisi maximus cursus. Nunc urna libero, viverra sit amet nisl at, hendrerit tempor turpis. Maecenas facilisis convallis mi vel tempor. Nullam vitae nunc leo. Cras sed nisl consectetur, rhoncus sapien sit amet, tempus sapien.</p>
+	    <p>Integer turpis erat, porttitor vitae mi faucibus, laoreet interdum tellus. Curabitur posuere molestie dictum. Morbi eget congue risus, quis rhoncus quam. Suspendisse vitae hendrerit erat, at posuere mi. Cras eu fermentum nunc. Sed id ante eu orci commodo volutpat non ac est. Praesent ligula diam, congue eu enim scelerisque, finibus commodo lectus.</p>
+	  </md-content>
+	</md-tab>
+	<md-tab label="three">
+	  <md-content class="md-padding">
+	    <h1 class="md-display-2">Tab Three</h1>
+	    <p>Integer turpis erat, porttitor vitae mi faucibus, laoreet interdum tellus. Curabitur posuere molestie dictum. Morbi eget congue risus, quis rhoncus quam. Suspendisse vitae hendrerit erat, at posuere mi. Cras eu fermentum nunc. Sed id ante eu orci commodo volutpat non ac est. Praesent ligula diam, congue eu enim scelerisque, finibus commodo lectus.</p>
+	  </md-content>
+	</md-tab>
+      </md-tabs>
+    </md-content>
+    </div>
+
+
+  <tabset>
+    
+    <tab heading="Static title">
+
+      <div flex>
+	
+	<div layout="column" class="interface">
+
+        <div id="rightPanel">
+            <ul>
+                <li class="normalIco"><a href="#" id="ttAccount" ng-click="currentMember ? logout() : openLoginDialog(true)"><i class="zmdi zmdi-hc-fw zmdi-hc-2x zmdi-account-circle"></i></a></li>
+                <div class="mdl-tooltip" for="ttAccount"><span ng-hide="currentMember">Se connecter</span><span ng-show="currentMember != null">Se deconnecter boo<br />{{currentMember.Email}}<br />{{uxMgr.shop.Title}}</span></div>
+
+                <li class="normalIco"><a href="/" id="ttAccueil"><i class="zmdi zmdi-hc-fw zmdi-hc-2x zmdi-home"></i></a></li>
+                <div class="mdl-tooltip" for="ttAccueil">Retour à l'accueil</div>
+
+                <li class="normalIco" ng-show="canEditProject"><a href="#" id="ttSaveProject" ng-click="openSaveDialog(false)"><i class="zmdi zmdi-hc-fw zmdi-hc-2x zmdi-cloud-upload"></i></a></li>
+                <div class="mdl-tooltip" for="ttSaveProject">Enregistrer</div>
+
+                <li class="normalIco"><a href="#" id="ttSaveAsProject" ng-click="openSaveDialog(true)"><i class="zmdi zmdi-hc-fw zmdi-hc-2x zmdi-cloud-outline"></i></a></li>
+                <div class="mdl-tooltip" for="ttSaveAsProject">Enregistrer Sous...</div>
+
+                <li class="normalIco"><a href="#" id="ttProjects" ng-click="open()"><i class="zmdi zmdi-hc-fw zmdi-hc-2x zmdi-folder"></i></a></li>
+                <div class="mdl-tooltip" for="ttProjects">Mes projets</div>
+
+                <li class="normalIco"><a href="#" id="ttHelp" ng-click="openHelp('https://player.vimeo.com/video/8766117?autoplay=1')"><i class="zmdi zmdi-hc-fw zmdi-hc-2x zmdi-help-outline"></i></a></li>
+                <div class="mdl-tooltip" for="ttHelp">Aide</div>
+
+                <li class="normalIco" ng-show="canSaveClosetModel()"><a href="#" id="ttSaveClosetModel" ng-click="saveClosetModel()"><i class="zmdi zmdi-hc-fw zmdi-hc-2x zmdi-folder-star-alt"></i></a></li>
+                <div class="mdl-tooltip" for="ttSaveClosetModel">Enregistrer le modèle de meuble</div>
+
+            </ul>
+        </div>
+
+	<!-- TODO : re-introduce if/when we come up with a logo for Simon's menuiserie
+             <div class="logoContainer">
+               <img src="/media/1040/logo_simon_b.png" alt="Menuiserie Simon" />
+             </div>
+	     -->
+	
+            <div id="leftPanel" ng-class="{'anim-showToolPanel': hasToolPanelShown}" ng-show="canEditProject">
+              <!-- Closet Tab -->
+              <a href="#" class="tab" id="closetTabIco" ng-click="uxMgr.toggleToolPanel('closetTab', true)"><i class="zmdi zmdi-hc-fw zmdi-hc-2x zmdi-transform"></i></a>
+              <div class="mdl-tooltip" for="closetTabIco">Configuration du meuble</div>
+              
+              <!-- Zone Tab -->
+              <a href="#" class="tab" id="zonesTabIco" ng-click="uxMgr.toggleToolPanel('zoneTab', true)"><i class="zmdi zmdi-hc-fw zmdi-hc-2x zmdi-border-outer"></i></a>
+              <div class="mdl-tooltip" for="zonesTabIco">Configuration des zones</div>
+              
+              <!-- accessories Tab -->
+              <a href="#" class="tab" id="accessoriesTabIco" ng-click="uxMgr.toggleToolPanel('drawerTab', true)" ng-if="uxMgr.selectedComponentTool"><i class="zmdi zmdi-hc-fw zmdi-hc-2x zmdi-inbox"></i></a>
+              <div class="mdl-tooltip" for="accessoriesTabIco" ng-if="uxMgr.selectedComponentTool">Configuration des éléments</div>
+              
+              <!-- ** [ Closet Tab Content ] ** -->
+              <div id="closetPanelContent" ng-style="{'display': closetTabActive ? 'block' : 'none'}">
+                <h1 class="panelTitle" style="margin-top:10px;">| Configuration meuble</h1>
+                <div class="insidePanelContainer" ng-form="myClosetForm">
+                  
+                  <!-- Slider Largeur en cm -->
+                  <div>
+                    <label><span class="w700">Largeur</span> en cm</label>
+                    <div style="display: inline-block; width: 260px; padding:0 25px;">
+                      <input class="mdl-slider mdl-js-slider" type="range" ez-slider-val="uxCloset.closetWidth" ez-slider-change="uxCloset.update()" 
+                             step="0,1" min="{{uxCloset.minWidth | number:1}}" max="{{uxCloset.maxWidth | number:1}}"/>
+                    </div>
+                    <div style="display: inline-block;">
+                      <input class="numericField" ng-class="{'error': myClosetForm.closetWidth.$invalid}" type="number" name="closetWidth" ng-model="uxCloset.closetWidth" ng-change="uxCloset.update()"
+                             step="0.1" min="{{uxCloset.minWidth | number:1}}" max="{{uxCloset.maxWidth | number:1}}" required/>
+                    </div>
+                  </div>
+                  
+                  <!-- Slider Hauteur en cm -->
+                  <div>
+                    <label><span class="w700">Hauteur</span> en cm</label>
+                    <div style="display: inline-block; width: 260px; padding:0 25px;">
+                      <input class="mdl-slider mdl-js-slider" type="range" ez-slider-val="uxCloset.closetHeight" ez-slider-change="uxCloset.update()" 
+                             step="0,1" min="{{uxCloset.minHeight | number:1}}" max="{{uxCloset.maxHeight | number:1}}"/>
+                    </div>
+                    <div style="display: inline-block;">
+                      <input class="numericField" ng-class="{'error': myClosetForm.closetHeight.$invalid}" type="number" name="closetHeight" ng-model="uxCloset.closetHeight" ng-change="uxCloset.update()"
+                             step="0.1" min="{{uxCloset.minHeight | number:1}}" max="{{uxCloset.maxHeight | number:1}}" required />
+                    </div>
+                  </div>  
+                  
+                  <!-- Slider Profondeur en cm -->
+                  <div>
+                    <label><span class="w700">Profondeur</span> en cm</label>
+                    <div style="display: inline-block; width: 260px; padding:0 25px;">
+                      <input class="mdl-slider mdl-js-slider" type="range" ez-slider-val="uxCloset.closetDepth" ez-slider-change="uxCloset.update()" 
+                             step="0,1" min="{{uxCloset.minDepth | number:1}}" max="{{uxCloset.maxDepth | number:1}}"/>
+                    </div>
+                    <div style="display: inline-block;">
+                      <input class="numericField" ng-class="{'error': myClosetForm.closetDepth.$invalid}" type="number" name="closetDepth" ng-model="uxCloset.closetDepth" ng-change="uxCloset.update()"
+                             step="0.1" min="{{uxCloset.minDepth | number:1}}" max="{{uxCloset.maxDepth | number:1}}" required />
+                    </div>
+                  </div>    
+                  
+                  <!-- Dropdown menu Epaisseur -->
+                  <div style="display: inline-block; width: 310px;">
+                    <label><span class="w700">Epaisseur</span></label>    
+                  </div>
+                  <div style="display: inline-block;">
+                    <!-- Standard Select -->
+                    <div class="mdl-selectfield">
+                      <select ng-options="mat.Title for mat in materials" ng-model="selectedMaterial" ng-change="uxCloset.changePanel()"></select>
+                    </div>  
+                  </div> 
+                  
+                  <!-- Finitions -->
+                  <hr class="tabHr">
+                  <label><span class="w700">Finition</span> ({{selectedColour.Title}})</label>
+                  
+                  <div class="multiChoiceBox">
+                    <div class="finitionCardContainer">
+		      
+                      <!-- Finition card -->
+                      <a href="#" class="finitionCard" ng-class="{finitionCardSelected: selectedColour === clr}" ng-repeat="clr in colours" ng-click="uxCloset.changeColour(clr)">
+                        <div class="finition" ng-style="{ background: clr.HasColor ? ('#'+ clr.Color) : ('url(' + clr.ImageUrl + ')') }">
+                          <img src="/img/material_top_layer.png" />
+                        </div>
+                        <p>{{clr.Title}}</p>
+                      </a>
+		      
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- ** [ Zones Tab Content ] ** -->
+              <div id="zonesPanelContent" ng-style="{'display': zoneTabActive ? 'block' : 'none'}">
+                <h1 class="panelTitle">| Configuration Zones</h1>
+                <div class="insidePanelContainer" ng-form="myZoneDimForm">
+                  
+                  <!-- Slider Largeur en cm -->
+                  <div>
+                    <label><span class="w700">Largeur</span> en cm</label>
+                    <div style="display: inline-block; width: 200px;">
+                      <input class="mdl-slider mdl-js-slider" type="range" ez-slider-val="uxZone.width" ez-slider-change="uxZone.updateDimension()" 
+                             step="0,1" min="{{uxZone.minWidth | number:1}}" max="{{uxZone.maxWidth | number:1}}" ng-disabled="!uxZone.canSetWidth"/>
+                    </div>
+                    <input class="numericField" ng-class="{'error': uxZone.canSetWidth && myZoneDimForm.zoneWidth.$invalid}" type="number" style="display: inline-block;" name="zoneWidth" ng-model="uxZone.width" type="number" ng-disabled="!uxZone.canSetWidth" ng-change="uxZone.updateDimension()"
+                           step="0.1" min="{{uxZone.minWidth | number:1}}" max="{{uxZone.maxWidth | number:1}}" required/>
+                    <button class="freeBtn" style="display: inline-block;" ng-click="uxZone.updateWidthAutoSize()" ng-disabled="!uxZone.canSetWidthAutoSize">
+                      <i class="zmdi zmdi-hc-fw zmdi-hc-1x">{{(uxZone.widthAutoSize ? '' : '' )}}</i>{{(uxZone.widthAutoSize ? 'Auto' : 'Libre' )}}
+                    </button>
+                  </div>
+                  
+                  <!-- Slider Hauteur en cm -->
+                  <div>
+                    <label><span class="w700">Hauteur</span> en cm</label>
+                    <div style="display: inline-block; width: 200px;">
+                      <input class="mdl-slider mdl-js-slider" type="range" ez-slider-val="uxZone.height" ez-slider-change="uxZone.updateDimension()" 
+                             step="0,1" min="{{uxZone.minHeight | number:1}}" max="{{uxZone.maxHeight | number:1}}" ng-disabled="!uxZone.canSetHeight"/>
+                    </div>
+                    <input class="numericField" ng-class="{'error': uxZone.canSetHeight && myZoneDimForm.zoneHeight.$invalid}" type="number" style="display: inline-block;" name="zoneHeight" ng-model="uxZone.height" type="number" ng-disabled="!uxZone.canSetHeight" ng-change="uxZone.updateDimension()"
+                           step="0.1" min="{{uxZone.minHeight | number:1}}" max="{{uxZone.maxHeight | number:1}}" required/>
+                    <button class="autoBtn" style="display: inline-block;" ng-click="uxZone.updateHeightAutoSize()" ng-disabled="!uxZone.canSetHeightAutoSize">
+                      <i class="zmdi zmdi-hc-fw zmdi-hc-1x icon-rotate-90">{{(uxZone.heightAutoSize ? '' : '' )}}</i>{{(uxZone.heightAutoSize ? 'Auto' : 'Libre' )}}
+                    </button>
+                  </div>
+                  
+                  <!-- Division de zone -->
+                  <div>
+                    <hr class="tabHr">
+                    <label><span class="w700">Diviser la zone</span></label>
+                    <div class="divideZonesContainer">
+                      <button class="divideZonesBtn materialBlue" ng-click="uxZone.split('horizontal')" ng-disabled="!uxZone.canSplitVerticaly">
+                        <i class="zmdi zmdi-hc-fw zmdi-hc-4x"></i><span>Division Verticale</span>
+                      </button>
+                      <button class="divideZonesBtn materialRed" ng-click="uxZone.split('vertical')" ng-disabled="!uxZone.canSplitHorizontaly">
+                        <i class="zmdi zmdi-hc-fw zmdi-hc-4x"></i><span>Division Horizontale</span>
+                      </button>
+                    </div>
+                  </div>         
+                  
+                  <!-- Supprimer un séparateur -->
+                  <div>
+                    <label><span class="w700">Supprimer un séparateur</span></label>
+                    <div class="separatorContainer">
+                      <button class="separatorBtn" id="leftDelete" ng-click="uxZone.removeVerticalSeparator('left')" ng-disabled="!uxZone.canDeleteLeftSep">
+                        <i class="zmdi zmdi-hc-fw zmdi-hc-4x"></i>
+                      </button>
+                      <div class="mdl-tooltip" for="leftDelete"  ng-show="uxZone.canDeleteLeftSep">Supprimer le séparateur Gauche</div>
+		      
+                      <button class="separatorBtn" id="rightDelete" ng-click="uxZone.removeVerticalSeparator('right')" ng-disabled="!uxZone.canDeleteRightSep">
+                        <i class="zmdi zmdi-hc-fw zmdi-hc-4x"></i>
+                      </button>
+                      <div class="mdl-tooltip" for="rightDelete" ng-show="uxZone.canDeleteRightSep">Supprimer le séparateur Droit</div>
+		      
+                      <button class="separatorBtn" id="topDelete" ng-click="uxZone.removeHorizontalSeparator('top')" ng-disabled="!uxZone.canDeleteTopSep">
+                        <i class="zmdi zmdi-hc-fw zmdi-hc-4x"></i>
+                      </button>
+                      <div class="mdl-tooltip" for="topDelete" ng-show="uxZone.canDeleteTopSep">Supprimer le séparateur Haut</div>
+
+                      <button class="separatorBtn" id="bottomDelete" ng-click="uxZone.removeHorizontalSeparator('bottom')" ng-disabled="!uxZone.canDeleteBottomSep">
+                        <i class="zmdi zmdi-hc-fw zmdi-hc-4x"></i>
+                      </button>
+                      <div class="mdl-tooltip" for="bottomDelete" ng-show="uxZone.canDeleteBottomSep">Supprimer le séparateur Bas</div>
+                    </div>
+                  </div>
+		  
+                  <!-- Choix types de fond -->
+                  <div ng-if="uxMgr.userCanOperateBackPanel()" ng-show="uxZone.isEnabled">
+                    <div style="display: inline-block; width: 210px;">
+                      <label><span class="w700">Fond</span></label>    
+                    </div>
+                    <div style="display: inline-block;">
+                      <!-- Standard Select -->
+                      <div class="mdl-selectfield">
+                        <select ng-options="back.Title for back in backPanels" ng-model="uxZone.selectedBackModel" ng-change="uxZone.changeBackModel()" ng-disabled="!uxZone.canChangeBackPanel"></select>
+                      </div>  
+                    </div>
+                  </div>
+		  
+                  <!-- Choix finitions du fond -->
+                  <label ng-if="uxMgr.userCanColourBackPanel()" ng-show="uxZone.isEnabled && uxZone.selectedBackModel.Id !== 0"><span class="w700">Finition du fond</span></label>
+                  <div ng-if="uxMgr.userCanColourBackPanel()" class="multiChoiceBox" ng-show="uxZone.isEnabled && uxZone.selectedBackModel.Id !== 0">
+                    <div class="finitionCardContainer">
+		      
+                      <!-- Finition card -->
+                      <a href="#" class="finitionCard" ng-class="{finitionCardSelected: uxZone.selectedBackColour === clr}" ng-repeat="clr in colours" ng-click="uxZone.setBackColour(clr)">
+                        <div class="finition" ng-style="{ background: clr.HasColor ? ('#'+ clr.Color) : ('url(' + clr.ImageUrl + ')') }">
+                          <img src="/img/material_top_layer.png" />
+                        </div>
+                        <p>{{clr.Title}}</p>
+                      </a>
+		      
+                    </div>
+                  </div>                   
+                  
+                </div>
+              </div>    
+              
+              <!-- Accessories Tab Content -->
+              <div id="accessoriesPanelContent" ng-style="{'display': drawerTabActive ? 'block' : 'none'}" ng-if="uxMgr.selectedComponentTool">
+                <h1 class="panelTitle">| Configuration des éléments</h1>
+                <div class="insidePanelContainer">
+                  
+                  <!-- Choix famille accessoires -->
+                  <div style="display: inline-block; width: 310px;">
+                    <label><span class="w700">Type d'accessoires</span></label>    
+                  </div>
+                  <div style="display: inline-block; float: right;">
+                    <!-- Standard Select -->
+                    <div class="mdl-selectfield">
+                      <select ng-options="tool.title for tool in uxMgr.componentTools" ng-model="uxMgr.selectedComponentTool" 
+                              ng-disabled="!uxZone.isEnabled">
+                      </select>
+                    </div>  
+                  </div> 
+		  
+                  <ng-include src="uxMgr.selectedComponentTool.html"></ng-include>
+                  
+                </div>  
+              </div>  
+	      
+            </div>
+
+	     <!-- Ici Conteneur de la scene 3D -->
+	     <div class="scene3d"></div>
+	    
+        <div id="footerPanel">            
+            <div id="priceContainer" ng-class="{'anim-showPricePanel': hasToolPanelShown}">
+                <!-- Shop Selection -->
+                <div class="mdl-selectfield" style="margin-left:20px; width: 200px; float: left" ng-if="shops && currentMember && currentMember.ShopId === 0">
+                    <select ng-options="shop.Title for shop in shops" ng-model="uxMgr.shop" ng-change="shopChange()"></select>
+                </div>
+                <!-- Bouton flotant bas d'ecran Commander -->
+                <div ng-if="canOrderProject()" class="orderBtn"><a href="#" ng-click="uxMgr.orderCloset()"><i class="zmdi zmdi-hc-fw zmdi-hc-1x zmdi-shopping-cart"></i>Commander ce meuble</a></div>
+                <a href="#" class="nomenclatureBtn" ng-click="openBOMDialog(true)"><i class="zmdi zmdi-hc-fw zmdi-hc-2x zmdi-format-list-numbered"></i></a>
+                <p class="titlePrice">Prix :</p>
+                <p class="exvatPrice">{{vattotalPrice | number:2}} € TTC</p>
+                <p class="vatPrice">{{exVattotalPrice | number:2}} € HT</p>
+            </div>
+        </div>
+
+    </div>  
+
+    <div class="dialogContainer" ng-if="isBusy">
+        <div class="dialogBoxMessage">
+            <p>{{busyMsg}}</p>
+            <div id="p2" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
+        </div>
+    </div>
+    
+    <!-- Conteneur des fenetres de dialogue -->
+    <div class="dialogContainer" ng-show="showBgDialog || uxMgr.errorMsg !== ''" ng-click="closeDialogs()">
+        
+        <!-- ** [ Fenetre de dialogue Message d'Erreur ]** -->
+        <div class="dialogBoxMessage" ng-show="uxMgr.errorMsg !== ''">
+            <p><i class="zmdi zmdi-hc-fw zmdi-hc-1x zmdi-alert-circle"></i>{{uxMgr.errorMsg}}</p>
+            <span class="dialogBoxBtnContainer"><button class="mdl-button mdl-js-button mdl-js-ripple-effect" ng-click="closeMsgDialog()">FERMER</button></span>
+        </div>
+        
+        <!-- ** [ Fenetre de dialogue Message standard ]** -->
+        <div class="dialogBoxMessage" ng-show="uxMgr.msgDialogIsShown">
+            <p><i class="zmdi zmdi-hc-fw zmdi-hc-1x zmdi-info-outline" style="color: blue"></i>{{uxMgr.dialogMsg}}</p>
+            <span class="dialogBoxBtnContainer"><button class="mdl-button mdl-js-button mdl-js-ripple-effect" ng-click="uxMgr.closeMsgDialog()">FERMER</button></span>
+        </div>     
+        
+        
+        <!-- ** [ Fenetre de Login + Création de compte ]** -->
+        <div class="dialogBoxLogin" ng-show="showLoginDialog" ng-click="stopClickPropagation($event)">
+            <div style="margin:25px; padding:10px; display: flex;">
+                <div class="loginPanel">
+                    <h1>Se Connecter</h1>
+                    <p ng-if="!loginFailed">Entrez votre email et votre mot de passe pour créer votre meuble</p>
+                    <p ng-if="loginFailed" style="color: #f00">{{loginFailedMsg}}</p>
+                    <form name="myLoginForm">
+                        <div class="mdl-textfield mdl-js-textfield">
+                            <input class="mdl-textfield__input" type="email" id="username" ng-model="loginEmail" required/>
+                            <label class="mdl-textfield__label" ng-class="{'error': loginFailed}" for="sample1">Email</label>
+                        </div>
+                        <div class="mdl-textfield mdl-js-textfield">
+                            <input class="mdl-textfield__input" ng-class="{'error': loginFailed}" type="password" id="password" ng-model="loginPassword" required/>
+                            <label class="mdl-textfield__label" for="sample1">Mot de passe</label>
+                        </div>
+                        <div style="margin-top:20px;">
+                            <a href="#" style="display:block; font-size:12px!important; font-weight: normal; text-align:left!important; text-decoration:underline;" ng-click="resetPassword()">
+                                Réinitialiser mon mot de passe
+                            </a>
+                        </div>
+                        <div style="text-align: right; margin-top:30px;">
+                            <button id="connectBtn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" style="margin-left:20px;" ng-click="login()" ng-disabled="uxMgr.hasPendingOp" >SE CONNECTER</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="newAccountPanel">
+                    <h1>Nouvel utilisateur</h1>
+                    <p ng-if="!registerFailed">Créez un compte et recevez votre mot de passe par mail</p>
+                    <p ng-if="registerFailed" style="color: #f00">{{registerFailedMsg}}</p>
+                    <form name="myRegisterForm">
+                        <div>
+                            <div class="mdl-textfield mdl-js-textfield">
+                                <input class="mdl-textfield__input" ng-model="registerLastName" required/>
+                                <label class="mdl-textfield__label">Votre nom</label>
+                            </div>
+                            <div class="mdl-textfield mdl-js-textfield">
+                                <input class="mdl-textfield__input" ng-model="registerFirstName" required/>
+                                <label class="mdl-textfield__label">Votre prénom</label>
+                            </div>
+                        </div>
+                        <div class="mdl-textfield mdl-js-textfield">
+                            <input class="mdl-textfield__input" type="email" ng-model="registerEmail" required/>
+                            <label class="mdl-textfield__label" >Email</label>
+                        </div>
+                        <div style="margin-top:10px;">
+                            <div 
+                                vc-recaptcha 
+                                key="'6LdmsygTAAAAACcySuC9H9LJxihGwvR-JWgeIWKG'" 
+                                ng-model="reCaptchaResponse" 
+                                data-size="normal" 
+                                data-theme="light"
+                                on-create="setReCaptchaWidgetId(widgetId)"
+                                on-expire="cbReCaptchaExpiration()">
+                            </div>
+                        </div>
+                        <div style="text-align: right; margin-top:30px;">
+                            <button id="registerBtn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" style="margin-left:20px; background-color: green!important;" ng-click="register()" ng-disabled="uxMgr.hasPendingOp">CREER UN COMPTE</button>
+                        </div>
+                    </form>
+                </div>    
+                
+            </div>
+        </div>
+        
+
+        <!-- ** [ Fenetre Enregistrer ]** -->
+        <div class="dialogBoxSave" ng-show="showSaveDialog" ng-click="stopClickPropagation($event)">
+            <div style="max-height:400px;">
+                <div style="margin:25px; padding:10px;">
+                    <h1>Enregistrer votre ouvrage</h1>
+                    <form>
+                        <div class="mdl-textfield mdl-js-textfield">
+                            <input class="mdl-textfield__input" type="text" id="fileName" ng-model="projectTitle" required />
+                            <label class="mdl-textfield__label" for="sample1">Titre de l'ouvrage</label>
+                        </div>
+                        <!-- Shop Selection 
+                        <div class="mdl-selectfield" style="margin-top:20px;" ng-if="shops && currentMember.ShopId === 0">
+                            <label>Points de vente</label>
+                            <select style="margin:10px 0 0 0;" ng-options="shop.Title for shop in shops" ng-model="uxMgr.shop">
+                            </select>
+                        </div> -->
+                    </form>
+                    <div style="text-align: right; margin-top:30px;">
+                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect" ng-click="closeSaveDialog()">FERMER</button>
+                        <button id="saveBtn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" style="margin-left:20px;" ng-click="save()" ng-disabled="uxMgr.hasPendingOp">ENREGISTRER</button>
+                    </div>    
+                </div>
+            </div>
+        </div>
+        
+        <!-- ** [ Fenetre de Nomenclature ]** -->
+        <div class="dialogBoxNomenclature" ng-show="showBOMDialog" ng-click="stopClickPropagation($event)">
+            <div style="margin:25px; padding:10px; overflow-y: auto; min-height:400px; max-height:400px;">
+                <h1>Nomenclature</h1>
+                <table class="mdl-data-table mdl-js-data-table">
+                  <thead>
+                    <tr>
+                        <th class="mdl-data-table__cell--non-numeric">Libellé</th>
+                        <th>Dimensions (cm)</th>
+                        <th>Surface (m²)</th>
+                        <th>Quantité</th>
+                        <th>Prix (HT)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="item in BOM">
+                      <td class="mdl-data-table__cell--non-numeric">{{item.title}}</td>
+                      <td>
+                          <span ng-if="item.dims.length === 3">{{item.dims[0] | number:2}} x {{item.dims[1] | number:2}} x {{item.dims[2] | number:2}}</span>
+                          <span ng-if="item.dims.length === 2">{{item.dims[0] | number:2}} x {{item.dims[1] | number:2}}</span>
+                          <span ng-if="item.dims.length === 1">{{item.dims[0] | number:2}}</span> {{item.dimsLabel}}
+                      </td>
+                      <td><span ng-if="item.surf > 0">{{item.surf | number:3}}</span></td>
+                      <td>{{item.qty ? item.qty : 1}}</td>
+                      <td>{{item.price | number:2}} € <br /><span style="font-size: 10px;">(dont éco-taxe {{item.ecoTax | number:2}} €)</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+            <span class="dialogBoxBtnContainer">
+                <button class="mdl-button mdl-js-button mdl-js-ripple-effect" ng-click="openBOMDialog(false)">FERMER</button>
+            </span>
+        </div>
+
+        <!-- ** [ Fenetre add-ons ]** -->
+        <div class="dialogBoxNomenclature" ng-show="uxAddon.showDialog" ng-click="stopClickPropagation($event)">
+            <div style="margin:25px; padding:10px; overflow-y: auto; min-height:400px; max-height:600px;">
+                <h1>Eléments additionels</h1>
+
+                <!-- Shoping cart -->
+                <h2 ng-show="uxAddon.getCart().length > 0">Votre Panier</h2>  
+                <table class="mdl-data-table mdl-js-data-table" ng-show="uxAddon.getCart().length > 0" style="margin-bottom: 10px;">  
+                  <thead>
+                    <tr>
+                        <th class="mdl-data-table__cell--non-numeric"></th>
+                        <th class="mdl-data-table__cell--non-numeric">Libellé</th>
+                        <th>Prix (HT)</th>
+                        <th>Qté</th>
+                        <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="item in uxAddon.getCart() track by item.Id" class="ez-repeat-animation">
+                      <td class="mdl-data-table__cell--non-numeric" style="padding-bottom:10px;"><img ng-src="{{item.MediaUrl}}" style="min-width: 64px; max-width: 64px; min-height: 64px; max-height: 64px; padding:10px; border: solid 1px gray;" /></td>
+                      <td class="mdl-data-table__cell--non-numeric"><span style="font-weight: 700">{{item.Title}}</span></td>
+                      <td>{{item.Price | number:2}} €</td>
+                      <td>
+                        <input class="numericField" style="border:1px solid gray" type="number" ng-class="{'error': item.invalid}" ng-model="item.inputQty" ng-change="uxAddon.updateCartItem(item)" step="1" min="1" max="9999" required/>
+                      </td>
+                      <td>
+                        <button id="removeCartBtn" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" ng-click="uxAddon.removeFromCart(item)" style="height:85px; width:85px; margin-top:0px;"><i class="zmdi zmdi-hc-fw zmdi-hc-2x"></i></button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <!-- Categories -->
+                <h2>Ajouter des accessoires</h2>
+                <div class="mdl-selectfield" ng-if="uxAddon.hasCategories()" style="margin-bottom:20px;">
+                    <select ng-options="category.Title for category in uxAddon.categories" ng-model="uxAddon.selectedCategory"></select>
+                </div>  
+                <!-- Catalogs -->
+                <table class="mdl-data-table mdl-js-data-table">
+                  <thead>
+                    <tr>
+                        <th class="mdl-data-table__cell--non-numeric"></th>
+                        <th class="mdl-data-table__cell--non-numeric">Libellé</th>
+                        <th>Prix (HT)</th>
+                        <th class="mdl-data-table__cell--non-numeric"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="item in uxAddon.items | filter:uxAddon.categoryFilter(uxAddon.selectedCategory) track by item.Id" class="ez-repeat-animation">
+                      <td class="mdl-data-table__cell--non-numeric" style="padding-bottom:10px;"><img ng-src="{{item.MediaUrl}}" style="min-width: 64px; max-width: 64px; min-height: 64px; max-height: 64px; padding:10px; border: solid 1px gray;" /></td>
+                      <td class="mdl-data-table__cell--non-numeric"><span style="font-weight: 700">{{item.Title}}</span><br />
+                          <div style="font-size: 12px" ng-bind-html="item.Description"></div>
+                      </td>
+                      <td>{{item.Price | number:2}} €</td>
+                      <td>
+                        <button id="addCartBtn" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" ng-click="uxAddon.addInCart(item)" style="height:85px; width:85px; margin-top:0px;"><i class="zmdi zmdi-hc-fw zmdi-hc-2x zmdi-shopping-cart-plus"></i></button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+            <span class="dialogBoxBtnContainer">
+                <button class="mdl-button mdl-js-button mdl-js-ripple-effect" ng-click="openAddonDialog(false)">Fermer</button>
+            </span>
+        </div>
+
+        <!-- ** [ Fenetre de bibliothèque ]** -->
+        <div class="dialogBoxNomenclature" ng-show="showProjectDialog" ng-click="stopClickPropagation($event)">
+            <div style="margin:25px; padding:10px; overflow-y: auto; max-height:400px;">
+                <h1>Mes projets</h1>
+                <table class="mdl-data-table mdl-js-data-table" id="myProjects">
+                  <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Date dernière action</th>
+                        <th class="mdl-data-table__cell--non-numeric">Etat</th>
+                        <th class="mdl-data-table__cell--non-numeric">Titre</th>                        
+                        <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="item in myProjects.items track by item.Id" class="ez-repeat-animation">
+                        <td>{{item.Id}}</td>
+                        <td>{{item.StatusDate | date:'dd/MM/yyyy HH:mm:ss'}}</td>
+                        <td class="mdl-data-table__cell--non-numeric">
+                            <div id="{{'status'+item.Id}}"><i class="zmdi" ng-class="myProjects.getStatusClass(item)"></i> {{myProjects.getStatusText(item)}}</div>
+                        </td>
+                        <td class="mdl-data-table__cell--non-numeric"><strong>{{item.Title}}</strong></td>
+                        <td>
+                        	<button id="opentBtn" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" ng-click="open(item.Id)" ng-disabled="item.Id === project.getId()"><i class="zmdi zmdi-hc-fw zmdi-hc-1x"></i>OUVRIR</button>
+                        	<button id="deleteBtn" class="mdl-button mdl-js-button mdl-button--raised" ng-click="deleteProject(item)" ng-disabled="!canDeleteProject(item)"><i class="zmdi zmdi-hc-fw zmdi-hc-1x"></i>SUPPRIMER</button>
+                        </td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+            <span class="dialogBoxBtnContainer">
+                <button class="mdl-button mdl-js-button mdl-js-ripple-effect" ng-click="openProjectDialog(false)">FERMER</button>
+            </span>
+        </div>
+        
+    </div>
+
+</div>
+    
+	  </tab>
+	  <tab heading="Static title 2" sepecial-tab="">Static content2 {{hello}}</tab>
+	  <tab heading="Static title 3" select="thirdTabCallback()">Static content3 {{test}}
+	    <button ng-click="clickme()">click me</button>
+	  </tab>
+	  <tab ng-repeat="tab in tabs" heading="{{tab.title}}" active="tab.active" disable="tab.disabled">{{tab.content}}</tab>
+	  <tab select="alertMe()">
+	    <tab-heading> <i class="glyphicon glyphicon-bell"></i> Alert!</tab-heading>I've got an HTML heading, and a select callback. Pretty cool!</tab>
+	</tabset>
+	        
+</div>
+
+<script>
+    (function () {
+
+    })();
+</script>
+</body>
+</html>
